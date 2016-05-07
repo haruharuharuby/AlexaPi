@@ -134,7 +134,8 @@ def start():
         # recording(asyncronous)
         recording_thread = threading.Thread(target=async_recording)
         recording_thread.start()
-        time.sleep(15)
+
+        time.sleep(5)
 
         recorded = False
         recording_thread.join(timeout=0.1)
@@ -146,7 +147,12 @@ def start():
         rf.write(audio)
         rf.close()
         inp = None
+
+        os.system('mpg123 -q {}recording.wav'.format(path))
+
         alexa()
+
+        time.sleep(10)
 
 if __name__ == "__main__":
 	# GPIO.setwarnings(False)
