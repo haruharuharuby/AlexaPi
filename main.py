@@ -57,7 +57,7 @@ def gettoken():
 
 
 def alexa():
-	GPIO.output(24, GPIO.HIGH)
+	# GPIO.output(24, GPIO.HIGH)
 	url = 'https://access-alexa-na.amazon.com/v1/avs/speechrecognizer/recognize'
 	headers = {'Authorization' : 'Bearer %s' % gettoken()}
 	d = {
@@ -118,20 +118,18 @@ def async_recording():
 
 def start():
 	while True:
-        # setup recording
-    	# GPIO.output(25, GPIO.HIGH)
-    	inp = alsaaudio.PCM(alsaaudio.PCM_CAPTURE, alsaaudio.PCM_NORMAL, device)
-    	inp.setchannels(1)
-    	inp.setrate(16000)
-    	inp.setformat(alsaaudio.PCM_FORMAT_S16_LE)
-    	inp.setperiodsize(500)
-    	audio = ""
-    	l, data = inp.read()
-    	if l:
-    		audio += data
-    	recorded = True
+        inp = alsaaudio.PCM(alsaaudio.PCM_CAPTURE, alsaaudio.PCM_NORMAL, device)
+        inp.setchannels(1)
+        inp.setrate(16000)
+        inp.setformat(alsaaudio.PCM_FORMAT_S16_LE)
+        inp.setperiodsize(500)
+        audio = ""
+        l, data = inp.read()
+        if l:
+        	audio += data
+        recorded = True
 
-	    os.system('mpg123 -q {}record_now.mp3'.format(path))
+        os.system('mpg123 -q {}record_now.mp3'.format(path))
 
         # recording(asyncronous)
         recording_thread = threading.Thread(target=async_recording)
@@ -141,14 +139,14 @@ def start():
         recorded = False
         recording_thread.join(timeout=0.1)
 
-	    os.system('mpg123 -q {}request_now.mp3'.format(path))
+        os.system('mpg123 -q {}request_now.mp3'.format(path))
 
         # call alexa
-		rf = open(path+'recording.wav', 'w')
-		rf.write(audio)
-		rf.close()
-		inp = None
-		alexa()
+        rf = open(path+'recording.wav', 'w')
+        rf.write(audio)
+        rf.close()
+        inp = None
+        alexa()
 
 if __name__ == "__main__":
 	# GPIO.setwarnings(False)
